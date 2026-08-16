@@ -10,7 +10,7 @@ import {
   DemoStepResult
 } from '../types';
 
-const API_BASE = '/api';
+const API_BASE = 'https://predictive-caching-engine.onrender.com/api';
 
 export const api = {
   // --- Products ---
@@ -127,16 +127,22 @@ export const api = {
     return res.json();
   },
 
-  async getLogs(limit: number = 50, eventType?: string): Promise<{ logs: ActivityLog[]; total: number }> {
-    const url = new URL(`${window.location.origin}${API_BASE}/logs`);
-    url.searchParams.set('limit', limit.toString());
-    if (eventType && eventType !== 'ALL') {
-      url.searchParams.set('eventType', eventType);
-    }
-    const res = await fetch(url.toString());
-    if (!res.ok) throw new Error('Failed to fetch activity logs');
-    return res.json();
-  },
+async getLogs(limit: number = 50, eventType?: string): Promise<{ logs: ActivityLog[]; total: number }> {
+  const url = new URL(`${API_BASE}/logs`);
+
+  url.searchParams.set('limit', limit.toString());
+
+  if (eventType && eventType !== 'ALL') {
+    url.searchParams.set('eventType', eventType);
+  }
+
+  const res = await fetch(url.toString());
+
+  if (!res.ok) throw new Error('Failed to fetch activity logs');
+
+  return res.json();
+},
+
 
   async getRequests(limit: number = 50): Promise<{ requests: RequestRecord[]; total: number }> {
     const res = await fetch(`${API_BASE}/requests?limit=${limit}`);
